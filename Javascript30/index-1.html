@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+"use strict";
+
+
+function playSound(e) {
+    // Sækja audio og div element eftir því hvaða takki á lyklaborði er sleginn.
+    // og nota ES6 template strings sem breytir því dynamically 
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+    // Ef það var ekki neitt sem var sótt fara úr falli
+    if (!audio) return;
+    // Setja klasan playing við div element til að fá animation
+    key.classList.add('playing');
+    // Til þess að triggja að það sé hægt að spila hljóðin mörgum sinnum í röð
+    audio.currentTime = 0;
+    // Spila hljóðskrá
+    audio.play();
+  }
+
+
+// Aðferð sem fjarlægir umbreytingu svo hún sé ekki föst við
+function removeTransition(e) {
+  if(e.propertyName !== 'transform') return; // Sækja einungis umbreytingu e.transform
+  this.classList.remove('playing'); // Eyðir klasanum "playing" við þann takka sem var ýtt á 
+}
+
+// Velja alla sem eru með key klasa merkinu
+const keys = document.querySelectorAll('.key');
+// Hlusta á hvern einasta lykil sem hlustar á  endingu umbreytingar, þegar það 
+// enda þá fjarlægjum við
+keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+// Hlusta á lyklaborð á atburði eftir því það sem er slegið inn til þess að tengja viðeigandi takka
+window.addEventListener('keydown', playSound);
+</script>
+
+
+</body>
+</html>
